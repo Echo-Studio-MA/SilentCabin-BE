@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -93,5 +94,16 @@ public class UserService implements UserDetailsService {
 
         // 반환
         return keyPair;
+    }
+
+    // 로그아웃
+    @Transactional
+    public void logout(AuthUser authUser) {
+        // 유저 찾기
+        User user = userRepository.findById(authUser.getId()).orElseThrow(() -> new CabinException(ErrorCode.USER_NOT_FOUND));
+
+        // 해당 유저의 refresh 토큰 모두 삭제
+        List<RefreshToken> refreshTokens = refreshRepository.findByUserId(user.getId());
+        refreshRepository.deleteAll(refreshTokens);
     }
 }

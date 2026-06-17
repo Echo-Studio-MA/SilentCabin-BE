@@ -27,7 +27,9 @@ public class SecurityConfig {
                 .httpBasic(basic -> basic.disable())
                 .formLogin(formLogin -> formLogin.disable())
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/api/v1/users/register", "/api/v1/auth/login").anonymous()
+                                .requestMatchers("/api/v1/users/register", "/api/v1/users/login").anonymous()
+                                .requestMatchers("/api/v1/users/refresh").permitAll()
+                                .requestMatchers("/api/v1/users/logout").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .exceptionHandling(exp ->exp

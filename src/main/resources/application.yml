@@ -23,8 +23,8 @@ logging:
 custom:
   jwt:
     validations:
-      access: 900000  # 15분
-      #      access: 30000  # 테스트 : 30초
+#      access: 900000  # 15분
+      access: 30000  # 테스트 : 30초
       refresh: 604800000  #7일
     secrets:
       app-key: ${jwt.app-key}
