@@ -4,10 +4,7 @@ import io.echo.silentcabin.common.exception.CabinException;
 import io.echo.silentcabin.common.exception.ErrorCode;
 import io.echo.silentcabin.user.domain.RefreshToken;
 import io.echo.silentcabin.user.domain.User;
-import io.echo.silentcabin.user.dto.AuthUser;
-import io.echo.silentcabin.user.dto.KeyPair;
-import io.echo.silentcabin.user.dto.LoginRequestDto;
-import io.echo.silentcabin.user.dto.SignUpRequestDto;
+import io.echo.silentcabin.user.dto.*;
 import io.echo.silentcabin.user.repository.RefreshTokenRepository;
 import io.echo.silentcabin.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +64,34 @@ public class UserService implements UserDetailsService {
 
         // refresh토큰 db 저장
         refreshRepository.save(new RefreshToken(keyPair.refreshToken(),expirationTime, user));
+        return keyPair;
+    }
+
+    // 토큰 갱신
+    @Transactional
+    public KeyPair refresh(RefreshRequestDto request) {
+        //리프레쉬 토큰 확인
+        RefreshToken refreshToken = refreshRepository.findByRefreshToken(request.refreshToken())
+                .orElseThrow(() -> new CabinException(ErrorCode.INVALID_REFRESH_TOKEN));
+
+        // 유효시간이 지났으면 유호하지 않은 토큰
+        if (refreshToken.getExpiresAt().isBefore(LocalDateTime.now()))
+            throw new CabinException(ErrorCode.INVALID_REFRESH_TOKEN);
+
+        // 유효하다면 AccessToken/RefreshToken 다시 생성
+        User user = refreshToken.getUser();
+        KeyPair keyPair = tokenProvider.issueKeyPair(user.getId(), user.getEmail(), user.getRole());
+
+        //refresh토큰 유효시간 추출
+        Date expiration = tokenProvider.parseExpiration(keyPair.refreshToken());
+        LocalDateTime expirationTime =
+                expiration.toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime();
+
+        refreshToken.update(keyPair.refreshToken(), expirationTime);
+
+        // 반환
         return keyPair;
     }
 }

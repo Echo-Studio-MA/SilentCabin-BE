@@ -4,8 +4,10 @@ import io.echo.silentcabin.common.dto.ApiResponse;
 import io.echo.silentcabin.common.success.SuccessCode;
 import io.echo.silentcabin.user.dto.KeyPair;
 import io.echo.silentcabin.user.dto.LoginRequestDto;
+import io.echo.silentcabin.user.dto.RefreshRequestDto;
 import io.echo.silentcabin.user.dto.SignUpRequestDto;
 import io.echo.silentcabin.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +29,17 @@ public class UserController {
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.SUCCESS_SIGNUP.getMessage()), HttpStatus.OK);
     }
 
+    //로그인
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<KeyPair>> login(@RequestBody LoginRequestDto request) {
         KeyPair keyPair = userService.login(request);
         return new ResponseEntity<>(ApiResponse.success(SuccessCode.SUCCESS_LOGIN.getMessage(), keyPair), HttpStatus.OK);
+    }
+
+    //토큰 갱신
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<KeyPair>> refresh(@RequestBody @Valid RefreshRequestDto request) {
+        KeyPair keypair = userService.refresh(request);
+        return new ResponseEntity<>(ApiResponse.success(keypair), HttpStatus.OK);
     }
 }
