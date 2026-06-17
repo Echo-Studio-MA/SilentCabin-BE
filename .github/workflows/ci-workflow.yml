@@ -1,0 +1,29 @@
+name: ci-workflow.yml  # 워크 플로우를 구별하기 위한 이름
+
+#이벤트 핸들러 -> 이벤트 감지, 이벤트 종류는 문서 직접 참고
+# dev, main에 pr올라왔을때 이벤트 발생
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+# job 정의
+jobs:
+  code-test:
+    name: 코드 테스트
+    runs-on: ubuntu-latest  #ubuntu-latest 환경에서 실행
+    steps:
+      - name: 브랜치로 체크 아웃
+        uses: actions/checkout@v6
+
+      - name: JDK 설치
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: gradlew 권한 세팅
+        run: chmod +x ./gradlew
+
+      - name: 실행
+        run: ./gradlew test --no-daemon

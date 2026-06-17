@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: Silent-Cabin
+  config:
+    import: optional:file:.env[.properties]
+  datasource:
+    url: ${dbUrl}
+    username: ${dbUserName}
+    password: ${dbPassWord}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    root: info
+    io.everyone.unitybe: debug
+
+custom:
+  jwt:
+    validations:
+      access: 900000  # 15분
+      #      access: 30000  # 테스트 : 30초
+      refresh: 604800000  #7일
+    secrets:
+      app-key: ${jwt.app-key}
+      origin-key: ${jwt.origin-key}
