@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum SuccessCode {
     SUCCESS_SIGNUP("계정이 정상적으로 생성되었습니다."),
+    SUCCESS_LOGIN("정상적으로 로그인되었습니다."),
     CABIN_SUCCESS("요청이 정상적으로 처리되었습니다.");
 
 

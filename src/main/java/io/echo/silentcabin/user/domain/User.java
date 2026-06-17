@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @Table(name = "users")
@@ -28,10 +30,16 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private LocalDateTime lastLoginAt;
+
     public User(String email, String nickname, String password) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.role = Role.USER;
+    }
+
+    public void updateLastLoginAt() {
+        this.lastLoginAt = LocalDateTime.now();
     }
 }

@@ -8,8 +8,9 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorCode {
     /*User*/
-    EXIST_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "이미 존재하는 회원입니다."),
-    USER_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "유저를 찾을 수 없습니다."),
+    EXIST_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 회원입니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다."),
+    PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "잘못된 비밀번호입니다."),
     /*Common*/
     CABIN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "알 수 없는 에러입니다.");
     private final HttpStatus status;
