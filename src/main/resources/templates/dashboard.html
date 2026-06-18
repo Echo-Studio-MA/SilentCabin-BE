@@ -13,5 +13,10 @@
 <script th:inline="javascript">
     sessionStorage.setItem("accessToken", /*[[${accessToken}]]*/ null);
     sessionStorage.setItem("refreshToken",  /*[[${refreshToken}]]*/ null);
+
+    const token = sessionStorage.getItem("accessToken");
+
+
+
 </script>
 </html>
