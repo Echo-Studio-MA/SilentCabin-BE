@@ -46,6 +46,7 @@ public class UserService implements UserDetailsService {
         return new AuthUser(user.getId(), user.getEmail(), user.getPassword(), user.getRole().name());
     }
 
+    @Transactional
     public LoginResponseDto login(LoginRequestDto request) {
 
         User user = userRepository.findByEmail(request.email()).orElseThrow(() -> new CabinException(ErrorCode.USER_NOT_FOUND));
@@ -105,5 +106,10 @@ public class UserService implements UserDetailsService {
         // 해당 유저의 refresh 토큰 모두 삭제
         List<RefreshToken> refreshTokens = refreshRepository.findByUserId(user.getId());
         refreshRepository.deleteAll(refreshTokens);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserFromAuthUser(AuthUser authUser) {
+        return userRepository.findById(authUser.getId()).orElseThrow(()->new CabinException(ErrorCode.USER_NOT_FOUND));
     }
 }
