@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Cabin — Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0f1117;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 24px 40px;
+            border-bottom: 1px solid #1e2433;
+        }
+
+        header .logo {
+            width: 10px;
+            height: 32px;
+            background: linear-gradient(180deg, #7c6af7, #4f46e5);
+            border-radius: 3px;
+        }
+
+        header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #f1f5f9;
+        }
+
+        header span {
+            font-size: 0.75rem;
+            color: #64748b;
+            background: #1e2433;
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+        main {
+            padding: 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #161b27;
+            border: 1px solid #1e2433;
+            border-radius: 16px;
+            padding: 28px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .card-badge {
+            font-size: 0.7rem;
+            color: #a78bfa;
+            background: #1e1a3a;
+            border: 1px solid #312e81;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            margin-bottom: 24px;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        .chart-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .chart-center-text .center-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            line-height: 1;
+        }
+
+        .chart-center-text .center-label {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-item strong {
+            color: #f1f5f9;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo"></div>
+    <h1>Silent Cabin</h1>
+    <span>Dashboard</span>
+</header>
+
+<main>
+    <div class="card">
+        <div class="card-header">
+            <span class="card-title">클리어율</span>
+            <span class="card-badge">전체 플레이</span>
+        </div>
+        <div class="card-value"
+             th:text="${clearCount + failCount} + ' 회'">100 회</div>
+
+        <div class="chart-container">
+            <canvas id="clearRateChart"></canvas>
+            <div class="chart-center-text">
+                <div class="center-value"
+                     th:text="${#numbers.formatDecimal(clearCount * 100.0 / (clearCount + failCount), 1, 0)} + '%'">73%</div>
+                <div class="center-label">클리어율</div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#7c6af7;"></div>
+                클리어
+                <strong th:text="${clearCount} + '회'"
+                        th:inline="text">[[${clearCount}]]회</strong>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:#1e2433; border: 2px solid #334155;"></div>
+                실패
+                <strong th:text="${failCount} + '회'"
+                        th:inline="text">[[${failCount}]]회</strong>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script th:inline="javascript">
+    const clearCount = /*[[${clearCount}]]*/ 73;
+    const failCount  = /*[[${failCount}]]*/  27;
+
+    const ctx = document.getElementById('clearRateChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['클리어', '실패'],
+            datasets: [{
+                data: [clearCount, failCount],
+                backgroundColor: ['#7c6af7', '#1e2433'],
+                borderColor:     ['#9d8ff9', '#334155'],
+                borderWidth: 2,
+                hoverBackgroundColor: ['#9d8ff9', '#2a3347'],
+                hoverOffset: 6,
+            }]
+        },
+        options: {
+            cutout: '72%',
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1e2433',
+                    borderColor: '#334155',
+                    borderWidth: 1,
+                    titleColor: '#94a3b8',
+                    bodyColor: '#f1f5f9',
+                    padding: 12,
+                    callbacks: {
+                        label: (ctx) => ` ${ctx.label}: ${ctx.raw}회 (${(ctx.raw / (clearCount + failCount) * 100).toFixed(1)}%)`
+                    }
+                }
+            },
+            animation: {
+                animateRotate: true,
+                duration: 900,
+                easing: 'easeInOutQuart'
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

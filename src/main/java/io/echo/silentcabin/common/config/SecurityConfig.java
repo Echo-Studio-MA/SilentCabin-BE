@@ -30,6 +30,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/users/register", "/api/v1/users/login").anonymous()
                                 .requestMatchers("/api/v1/users/refresh").permitAll()
                                 .requestMatchers("/api/v1/users/logout").authenticated()
+                                .requestMatchers("/dashboard/**", "/css/**", "/js/**").permitAll()
                                 .anyRequest().permitAll()
                 )
                 .exceptionHandling(exp ->exp
