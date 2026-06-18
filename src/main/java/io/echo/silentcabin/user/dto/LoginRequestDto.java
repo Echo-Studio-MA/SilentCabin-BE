@@ -1,18 +1,12 @@
 package io.echo.silentcabin.user.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.Length;
 
-public record SignUpRequestDto(
+public record LoginRequestDto(
         @Email(message = "이메일 형식으로 입력해주세요")
         String email,
-
-        @NotEmpty(message = "닉네임을 입력해주세요.")
-        @Length(min = 2, max = 20)
-        String nickname,
 
         @NotNull
         @Pattern(
