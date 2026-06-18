@@ -46,7 +46,7 @@ public class UserService implements UserDetailsService {
         return new AuthUser(user.getId(), user.getEmail(), user.getPassword(), user.getRole().name());
     }
 
-    public KeyPair login(LoginRequestDto request) {
+    public LoginResponseDto login(LoginRequestDto request) {
 
         User user = userRepository.findByEmail(request.email()).orElseThrow(() -> new CabinException(ErrorCode.USER_NOT_FOUND));
         if (!passwordEncoder.matches(request.password(), user.getPassword())) throw new CabinException(ErrorCode.PASSWORD_NOT_MATCH);
@@ -65,7 +65,7 @@ public class UserService implements UserDetailsService {
 
         // refresh토큰 db 저장
         refreshRepository.save(new RefreshToken(keyPair.refreshToken(),expirationTime, user));
-        return keyPair;
+        return new LoginResponseDto(user.getNickname(), keyPair.accessToken(), keyPair.refreshToken(), keyPair.accessExpiresInSeconds());
     }
 
     // 토큰 갱신

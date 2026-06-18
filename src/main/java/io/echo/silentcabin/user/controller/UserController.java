@@ -29,9 +29,9 @@ public class UserController {
 
     //로그인
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<KeyPair>> login(@RequestBody LoginRequestDto request) {
-        KeyPair keyPair = userService.login(request);
-        return new ResponseEntity<>(ApiResponse.success(SuccessCode.SUCCESS_LOGIN.getMessage(), keyPair), HttpStatus.OK);
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginRequestDto request) {
+        LoginResponseDto response = userService.login(request);
+        return new ResponseEntity<>(ApiResponse.success(SuccessCode.SUCCESS_LOGIN.getMessage(), response), HttpStatus.OK);
     }
 
     //토큰 갱신
