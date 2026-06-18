@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silent Cabin — Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<!--    <p th:text="${accessToken}"></p>
+    <p th:text="${refreshToken}"></p>-->
+
+</body>
+<script th:inline="javascript">
+    sessionStorage.setItem("accessToken", /*[[${accessToken}]]*/ null);
+    sessionStorage.setItem("refreshToken",  /*[[${refreshToken}]]*/ null);
+</script>
+</html>
