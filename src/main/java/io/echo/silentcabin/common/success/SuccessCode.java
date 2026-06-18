@@ -14,6 +14,7 @@ public enum SuccessCode {
 
     /*Play*/
     SUCCESS_SAVE_PLAY("정상적으로 플레이 기록이 저장되었습니다."),
+    SUCCESS_FIND_RANKING("정상적으로 랭킹이 조회되었습니다."),
     /*Common*/
     CABIN_SUCCESS("요청이 정상적으로 처리되었습니다.");
 
