@@ -10,9 +10,12 @@ public interface GamePlayRepository extends JpaRepository<GamePlay, Long> {
     @Query("""
         select g
         from GamePlay g
-        join fetch g.user
+        where g.score = (
+            select max(g2.score)
+            from GamePlay g2
+            where g2.user = g.user
+        )
         order by g.score desc
-        limit 10
         """)
     List<GamePlay> findTop10ByOrderByScoreDesc();
 
